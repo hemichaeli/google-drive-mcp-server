@@ -7,6 +7,7 @@ import { registerFolderTools } from "./tools/folders.js";
 import { registerPermissionTools } from "./tools/permissions.js";
 import { registerCommentTools, registerRevisionTools } from "./tools/comments.js";
 import { registerDriveTools, registerAboutTools, registerChannelTools } from "./tools/drives.js";
+import { registerChangeTools } from "./tools/changes.js";
 import { drive_v3 } from "@googleapis/drive";
 
 const app = express();
@@ -25,7 +26,7 @@ try {
 function createMcpServer(): McpServer {
   const server = new McpServer({
     name: "google-drive-mcp-server",
-    version: "1.0.0"
+    version: "1.1.0"
   });
 
   registerFileTools(server, driveClient);
@@ -36,6 +37,7 @@ function createMcpServer(): McpServer {
   registerDriveTools(server, driveClient);
   registerAboutTools(server, driveClient);
   registerChannelTools(server, driveClient);
+  registerChangeTools(server, driveClient);
 
   return server;
 }
@@ -70,10 +72,17 @@ app.post("/messages", async (req, res) => {
 });
 
 app.get("/health", (_req, res) => {
-  res.json({ status: "ok", service: "google-drive-mcp-server", sessions: sessions.size, timestamp: new Date().toISOString() });
+  res.json({
+    status: "ok",
+    service: "google-drive-mcp-server",
+    version: "1.1.0",
+    sessions: sessions.size,
+    timestamp: new Date().toISOString()
+  });
 });
 
 const PORT = parseInt(process.env.PORT ?? "3000", 10);
 app.listen(PORT, () => {
-  console.error(`Google Drive MCP Server running on port ${PORT}`);
+  console.error(`Google Drive MCP Server v1.1.0 running on port ${PORT}`);
+  console.error(`Tools: files, folders, permissions, comments, replies, revisions, drives, about, channels, changes`);
 });
