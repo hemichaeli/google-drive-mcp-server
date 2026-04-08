@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["nodejs_20", "npm-9_x"]
+
+[phases.build]
+cmds = ["npm ci", "NODE_OPTIONS='--max-old-space-size=2048' npm run build"]
+
+[start]
+cmd = "node dist/index.js"
